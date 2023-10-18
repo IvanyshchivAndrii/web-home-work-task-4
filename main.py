@@ -23,7 +23,15 @@ class MyHTTPRequestHandler(BaseHTTPRequestHandler):
                     self.send_html('error.html', 404)
 
     def do_POST(self):
-        pass
+        data = self.rfile.read(int(self.headers['Content-Length']))
+        print(data)
+        data_parse = urllib.parse.unquote_plus(data.decode())
+        print(data_parse)
+        data_dict = {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}
+        print(data_dict)
+        self.send_response(302)
+        self.send_header('Location', '/message')
+        self.end_headers()
 
     def send_html(self, filename, status_code=200):
         self.send_response(status_code)
